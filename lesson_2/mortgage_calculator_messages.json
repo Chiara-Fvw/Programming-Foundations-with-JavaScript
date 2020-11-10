@@ -1,0 +1,21 @@
+{
+  "welcome" : "Welcome to the mortgage calculator!",
+  "loan": {
+    "amount" : "Please, insert the total loan amount. Use only numbers.",
+    "error" : "Please, insert a number bigger than 0."
+  },
+  
+  "apr": {
+    "amount": "What is the Anual Percentage Rate? (Write 5 for 5%)",
+    "error" : "Please, insert a number bigger than 0."
+  },
+  
+  "duration": {
+    "amount": "How long will it take your loan? (Only full years)",
+    "error": "Please, insert an integer number."
+  },
+  
+  "estimation": "Would you like to make another estimation?(y or n)",
+  "correctAnswer": "Please, answer \"y\" or \"n\".",
+  "bye": "Thank you for using the mortgage calculator. Bye!"
+}

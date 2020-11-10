@@ -1,3 +1,5 @@
+const MESSAGES = require('./mortgage_calculator_messages.json');
+
 const readline = require('readline-sync');
 
 function prompt(message) {
@@ -5,51 +7,71 @@ function prompt(message) {
 }
 
 function invalidNumber(number) {
-  return number <= 0 ||
+  return number < 0 ||
   Number.isNaN(number);
 }
 
-prompt("Welcome to the mortgage calculator!");
-let answer;
-do {
-  prompt("Please, insert the total loan amount. Use only numbers.");
-  let loanAmount = Number(readline.question());
-  while (invalidNumber(loanAmount)) {
-    prompt("Please, insert a number.");
-    loanAmount = Number(readline.question());
+function retrieveInput(type) {
+  prompt(MESSAGES[type]["amount"]);
+  let input = Number(readline.question());
+  while (invalidNumber(input)) {
+    prompt(MESSAGES[type]["error"]);
+    input = Number(readline.question());
   }
+  return input;
+}
 
-  prompt("What is the Anual Percentage Rate? (Write 5 for 5%)");
-  let apr = Number(readline.question());
-  while (invalidNumber(apr)) {
-    prompt("Please, insert a number bigger than 0.");
-    apr = Number(readline.question());
-  }
-
-  prompt("How long will it take your loan? (Only full years)");
-  let loanDurationYears = Number(readline.question());
-  while (invalidNumber(loanDurationYears) || !Number.isInteger(loanDurationYears)) {
-    prompt("Please, insert a number. An integer number.");
-    loanDurationYears = Number(readline.question());
-  }
-
-  let loanDurationInMonths = loanDurationYears * 12;
-  let monthlyInterestRate = (apr / 12) / 100;
-  let monthlyPayment = (loanAmount * 
+function calculateMonthlyPayment(loan, apr, years) {
+  let loanDurationInMonths = years * 12;
+  let monthlyInterestRate = (apr / 12) / 100;  
+  if (apr === 0) {
+    return Number(loan / loanDurationInMonths).toFixed(2);
+  } else {
+    let calculation = (loan * 
                       (monthlyInterestRate / 
                       (1 - Math.pow((1 + monthlyInterestRate), (-loanDurationInMonths)))))
                       .toFixed(2);
+    return calculation;
+  }
+}
 
-  prompt(`Having a total loan of ${loanAmount.toFixed(2)} to be covered in ${loanDurationYears} years with a ${apr}% APR, you will have to pay $${monthlyPayment} a month.\n`);
+let answer;
 
-  prompt('Would you like to make another estimation?(y or n)');
+function retrieveNewCalAnswer() {
+  prompt(MESSAGES["estimation"]);
   answer = readline.question().toLowerCase();
   while (answer !== 'n' && answer !== 'y') {
-    prompt('Please, answer "y" or "n".');
+    prompt(MESSAGES["correctAnswer"]);
     answer = readline.question().toLowerCase();
   }
-  if (answer === 'n') {
-    prompt('Thank you for using the mortgage calculator. Bye!');
-  }
+  return answer;
+}
 
-} while (answer === 'y');
+function isNewCal(answer){
+  if (answer === 'y'){
+    return true;
+  } else {
+    return false;
+  }
+}
+
+prompt(MESSAGES["welcome"]);
+
+do {
+  let loanAmount = retrieveInput("loan");
+
+  let annualRate = retrieveInput("apr");
+
+  let loanDurationYears = retrieveInput("duration");
+
+  let monthlyPayment = calculateMonthlyPayment(loanAmount, annualRate, loanDurationYears);
+
+  prompt(`Having a total loan of ${loanAmount.toFixed(2)} to be covered in ${loanDurationYears} years with a ${annualRate}% APR, you will have to pay $${monthlyPayment} a month.\n`);
+
+  retrieveNewCalAnswer();
+
+  if (!isNewCal(answer)) prompt(MESSAGES["bye"]);
+
+  if (isNewCal(answer)) console.clear();
+
+} while (isNewCal(answer));

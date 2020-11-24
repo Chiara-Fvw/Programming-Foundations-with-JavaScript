@@ -8,6 +8,20 @@ function prompt(message) {
   console.log(`=> ${message}`);
 }
 
+function getPlayerChoice() {
+  prompt(`Choose one: ${VALID_CHOICES.join(', ')}. Use:\n s > scissors \n p > paper\n r > rock\n l > lizard\n S > Spock\n`);
+    let letter = readline.question();
+    let choice = VALID_CHOICES.find(element => element[0] === letter);
+
+    while (!VALID_CHOICES.includes(choice)) {
+      prompt("That's not a valid choice...");
+      let letter2 = readline.question(); //problema eslint porque habia puesto la variable x eso cambio el nombre.
+      choice = VALID_CHOICES.find(element => element[0] === letter2);
+    }
+
+    return choice;
+}
+
 function assignWinner(choice, computerChoice) {
   prompt(`You chose ${choice}, computer chose ${computerChoice}`);
   if ((choice === 'rock' && (computerChoice === 'scissors' || computerChoice === 'lizard')) ||
@@ -35,31 +49,37 @@ function displayWinner(winner) {
   }
 }
 
-while (true) {
-  prompt("The game starts now. The first player winning 5 rounds will be the grand winner")
-  while ((userVictories < 5) && (computerVictories < 5)) {
-    prompt(`Choose one: ${VALID_CHOICES.join(', ')}. Use:\n s > scissors \n p > paper\n r > rock\n l > lizard\n S > Spock\n`);
-    let letter = readline.question();
-    let choice = VALID_CHOICES.find(element => element[0] === letter);
-
-    while (!VALID_CHOICES.includes(choice)) {
-      prompt("That's not a valid choice...");
-      let letter2 = readline.question(); //problema eslint porque habia puesto la variable x eso cambio el nombre.
-      choice = VALID_CHOICES.find(element => element[0] === letter2);
-    }
-
-    let randomIndex = Math.floor(Math.random() * VALID_CHOICES.length);
-    let computerChoice = VALID_CHOICES[randomIndex];
-
-    let matchResult = assignWinner(choice, computerChoice);
-    displayWinner(matchResult);
-  }
-
+function determineGrandWinner(userVictories, computerVictories) {
   if (userVictories > computerVictories) {
+    return 'you';
+  } else {
+    return 'computer';
+  }
+}
+
+function displayGrandWinner(grandWinner) {
+  if (grandWinner === 'you') {
     prompt('GAME OVER.\n YOU ARE THE GRAND WINNER!');
   } else {
     prompt('GAME OVER.\n COMPUTER IS THE GRAND WINNER!');
   }
+}
+
+while (true) {
+  console.clear();
+  prompt("The game starts now. The first player winning 5 rounds will be the grand winner!");
+  while ((userVictories < 5) && (computerVictories < 5)) {
+    let yourChoice = getPlayerChoice();
+    let randomIndex = Math.floor(Math.random() * VALID_CHOICES.length);
+    let computerChoice = VALID_CHOICES[randomIndex];
+
+    let matchResult = assignWinner(yourChoice, computerChoice);
+    displayWinner(matchResult);
+  }
+
+  let grandWinner = determineGrandWinner(userVictories, computerVictories);
+  displayGrandWinner(grandWinner);
+
   userVictories = 0;
   computerVictories = 0;
 

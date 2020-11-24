@@ -10,16 +10,15 @@ function prompt(message) {
 
 function getPlayerChoice() {
   prompt(`Choose one: ${VALID_CHOICES.join(', ')}. Use:\n s > scissors \n p > paper\n r > rock\n l > lizard\n S > Spock\n`);
-    let letter = readline.question();
-    let choice = VALID_CHOICES.find(element => element[0] === letter);
+  let letter = readline.question();
+  let choice = VALID_CHOICES.find(element => element[0] === letter);
 
-    while (!VALID_CHOICES.includes(choice)) {
-      prompt("That's not a valid choice...");
-      let letter2 = readline.question(); //problema eslint porque habia puesto la variable x eso cambio el nombre.
-      choice = VALID_CHOICES.find(element => element[0] === letter2);
-    }
-
-    return choice;
+  while (!VALID_CHOICES.includes(choice)) {
+    prompt("That's not a valid choice...");
+    let letter2 = readline.question(); //problema eslint porque habia puesto la variable x eso cambio el nombre.
+    choice = VALID_CHOICES.find(element => element[0] === letter2);
+  }
+  return choice;
 }
 
 function assignWinner(choice, computerChoice) {
@@ -91,5 +90,5 @@ while (true) {
     answer = readline.question().toLowerCase();
   }
   console.clear();
-  if (answer[0] !== 'y') break; 
+  if (answer[0] !== 'y') break;
 }

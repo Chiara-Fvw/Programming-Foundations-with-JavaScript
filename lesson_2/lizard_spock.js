@@ -71,7 +71,6 @@ while (true) {
     let yourChoice = getPlayerChoice();
     let randomIndex = Math.floor(Math.random() * VALID_CHOICES.length);
     let computerChoice = VALID_CHOICES[randomIndex];
-
     let matchResult = assignWinner(yourChoice, computerChoice);
     displayWinner(matchResult);
   }

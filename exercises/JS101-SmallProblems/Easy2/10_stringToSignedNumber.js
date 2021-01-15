@@ -13,15 +13,18 @@ function stringToInteger(string) {
   };
   let arrayOfDigits = string.split("").map(char => DIGITS[char]);
   let value = 0;
-  arrayOfDigits.forEach(digit => (value = (10 * value)) + digit)
-};
+  arrayOfDigits.forEach(digit => (value = (10 * value) + digit));
+  return value;
+}
 function stringToSignedInteger(string){
-  if (string[0] === "-") {
-    console.log(stringToInteger(string));
-    return stringToInteger(string);
-  } else {
-    return stringToInteger(string);
-  };
+  switch (string[0]) {
+    case "-":
+      return -stringToInteger(string.slice(1, string.length));
+    case "+":
+      return stringToInteger(string.slice(1, string.length));
+    default:
+      return stringToInteger(string);
+  }
 }
 console.log(stringToSignedInteger("4321") === 4321); // logs true
 console.log(stringToSignedInteger("-570") === -570); // logs true

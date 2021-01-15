@@ -17,8 +17,9 @@ function stringToInteger(string) {
   };
   let arrayOfDigits = string.split("").map(char => DIGITS[char]);
   let value = 0;
-  arrayOfDigits.forEach(digit => (value = (10 * value)) + digit)
-};
+  arrayOfDigits.forEach(digit => (value = (10 * value) + digit));
+  return value;
+}
 
 console.log(stringToInteger("4321") === 4321); // logs true
 console.log(stringToInteger("570") === 570); // logs true

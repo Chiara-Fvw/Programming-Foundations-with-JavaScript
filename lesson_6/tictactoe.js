@@ -216,9 +216,13 @@ function displayGameSituation(winsOfPlayer, winsOfComputer) {
   }
 }
 
+//game starts
 while (true) {
   let winsOfPlayer = 0;
   let winsOfComputer = 0;
+
+  console.clear();
+  console.log(`Welcome to the Tic Tac Toe game. To win this match, you will have to win ${MATCHES_TO_WIN} games.`)
 
   while ((winsOfPlayer < MATCHES_TO_WIN) && (winsOfComputer < MATCHES_TO_WIN)) {
     let board = initializeBoard();

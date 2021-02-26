@@ -173,7 +173,7 @@ function alternatePlayer(currentPlayer) {
   return currentPlayer === 'player' ? 'computer' : 'player';
 }
 
-function detectWinner(board) {
+function detectRoundWinner(board) {
   for (let line = 0; line < WINNING_LINES.length; line++) {
     let [sq1, sq2, sq3] = WINNING_LINES[line];
 
@@ -195,24 +195,46 @@ function detectWinner(board) {
   return null;
 }
 
-function someoneWon(board) {
-  return !!detectWinner(board); // !! converts truthy values to true and falsy to false.
+function someoneWonRound(board) {
+  return !!detectRoundWinner(board); // !! converts truthy values to true and falsy to false.
 }
 
 function boardFull(board) {
   return emptySquares(board).length === 0;
 }
 
-function displayGameSituation(winsOfPlayer, winsOfComputer) {
+function displayRoundResult(winsOfPlayer, winsOfComputer) {
   prompt(`Player ${winsOfPlayer} / Computer ${winsOfComputer}`);
 
-  if (winsOfPlayer === MATCHES_TO_WIN)  {
-    prompt('Player is the winner of the match!');
-  } else if (winsOfComputer === MATCHES_TO_WIN) {
-    prompt('Computer is the winner of the match!');
+  let matchWinner = someoneWonMatch(winsOfPlayer, winsOfComputer);
+  switch (matchWinner) {
+    case 'player':
+      prompt('Player is the winner of the match!');
+      break;
+    case 'computer':
+      prompt('Computer is the winner of the match!');
+      break;
+
+    default:
+      prompt('Press enter to continue.');
+      readline.question();
+  }
+}
+
+function someoneWonMatch(player, computer) {
+  if (player === MATCHES_TO_WIN) {
+    return 'player';
+  } else if (computer === MATCHES_TO_WIN) {
+    return 'computer';
   } else {
-    prompt('Press enter to continue.');
-    readline.question();
+    return false;
+  }
+}
+
+function checkAnswer(answer) {
+  while ((answer !== 'n') && (answer !== 'y')) {
+    prompt(`Please, type "y" for "yes" or "n" for "no".`);
+    answer = readline.question().toLowerCase();
   }
 }
 
@@ -222,9 +244,9 @@ while (true) {
   let winsOfComputer = 0;
 
   console.clear();
-  console.log(`Welcome to the Tic Tac Toe game. To win this match, you will have to win ${MATCHES_TO_WIN} games.`)
+  console.log(`Welcome to the Tic Tac Toe game. To win this match, you will have to win ${MATCHES_TO_WIN} games.`);
 
-  while ((winsOfPlayer < MATCHES_TO_WIN) && (winsOfComputer < MATCHES_TO_WIN)) {
+  while (!someoneWonMatch(winsOfPlayer, winsOfComputer)) {
     let board = initializeBoard();
 
     let currentPlayer = STARTER;
@@ -239,18 +261,17 @@ while (true) {
       }
     }
 
-    while (true) {
+    while (!someoneWonRound(board) && !boardFull(board)) {
       displayBoard(board);
       chooseSquare(board, currentPlayer);
       currentPlayer = alternatePlayer(currentPlayer);
-      if (someoneWon(board) || boardFull(board)) break;
     }
 
     displayBoard(board);
 
-    if (someoneWon(board)) {
-      prompt(`${detectWinner(board)} won!`);
-      if (detectWinner(board) === 'Player') {
+    if (someoneWonRound(board)) {
+      prompt(`${detectRoundWinner(board)} won!`);
+      if (detectRoundWinner(board) === 'Player') {
         winsOfPlayer += 1;
       } else {
         winsOfComputer += 1;
@@ -259,16 +280,13 @@ while (true) {
       prompt("It's a tie!");
     }
 
-    displayGameSituation(winsOfPlayer, winsOfComputer);
+    displayRoundResult(winsOfPlayer, winsOfComputer);
   }
 
   prompt('Play again? (y/n)');
   let answer = readline.question().toLowerCase();
+  checkAnswer(answer);
 
-  while ((answer !== 'n') && (answer !== 'y')) {
-    prompt(`Please, type "y" for "yes" or "n" forn "no".`);
-    answer = readline.question().toLowerCase();
-  }
   if (answer === 'n') break;
 }
 

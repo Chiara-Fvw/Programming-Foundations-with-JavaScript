@@ -52,15 +52,12 @@ function total(cards) {
   return sum;
 }
 
-function busted(cards) {
-  return total(cards) > 21; //si es mayor devuelve true.
+function busted(total) {
+  return total > 21; //si es mayor devuelve true.
 }
 
-function detectResult(dealerCards, playerCards) {
-  let playerTotal = total(playerCards);
-  let dealerTotal = total(dealerCards);
-
-  if (playerTotal > 21) {
+function detectResult(dealerTotal, playerTotal) {
+    if (playerTotal > 21) {
     return 'PLAYER_BUSTED';
   } else if (dealerTotal > 21) {
     return 'DEALER_BUSTED';
@@ -73,8 +70,8 @@ function detectResult(dealerCards, playerCards) {
   }
 }
 
-function displayResults(dealerCards, playerCards) {
-  let result = detectResult(dealerCards, playerCards);
+function displayResults(dealerTotal, playerTotal) {
+  let result = detectResult(dealerTotal, playerTotal);
 
   switch (result) {
     case 'PLAYER_BUSTED':
@@ -111,7 +108,8 @@ function hand(cards) {
 
 //game starts
 while (true) {
-  prompt('Welcome to Twenty-one!');
+  console.clear();
+  prompt('Welcome to Twenty-one!\n');
 
   let deck = initializeDeck();
   let playerCards = [];
@@ -121,8 +119,11 @@ while (true) {
   playerCards.push(...popTwoFromDeck(deck));
   dealerCards.push(...popTwoFromDeck(deck));
 
+  let playerTotal = total(playerCards);
+  let dealerTotal = total(dealerCards);
+
   prompt(`Dealer has ${dealerCards[0]} and ?`);
-  prompt(`You have: ${playerCards[0]} and ${playerCards[1]}, for a total of ${total(playerCards)}.`);
+  prompt(`You have: ${playerCards[0]} and ${playerCards[1]}, for a total of ${playerTotal}.`);
 
   //Player turn
   while (true) {
@@ -136,35 +137,37 @@ while (true) {
 
     if (playerTurn === 'h') {
       playerCards.push(deck.pop());
+      playerTotal = total(playerCards);
       prompt('You chose to hit!');
       prompt(`Now your cards are: ${hand(playerCards)}`);
-      prompt(`Your total is now: ${total(playerCards)}`);
+      prompt(`Your total is now: ${playerTotal}`);
     }
 
-    if (playerTurn === 's' || busted(playerCards)) break;
+    if (playerTurn === 's' || busted(playerTotal)) break;
   }
 
-  if (busted(playerCards)) {
-    displayResults(dealerCards, playerCards);
+  if (busted(playerTotal)) {
+    displayResults(dealerTotal, playerTotal);
     if (playAgain()) {
       continue;
     } else {
       break;
     }
   } else {
-    prompt(`You stayed at ${total(playerCards)}`);
+    prompt(`You stayed at ${playerTotal}\n`);
   }
   //dealer turn
 
   prompt('Dealer turn:');
-  while (total(dealerCards) < 17) {
+  while (dealerTotal < 17) {
     prompt('Dealer hits!');
     dealerCards.push(deck.pop());
+    dealerTotal = total(dealerCards);
     prompt(`Dealer's cards are now: ${hand(dealerCards)}`);
   }
 
-  if (busted(dealerCards)) {
-    prompt(`Dealer total is now: ${total(dealerCards)}`);
+  if (busted(dealerTotal)) {
+    prompt(`Dealer total is now: ${dealerTotal}`);
     displayResults(dealerCards, playerCards);
     if (playAgain()) {
       continue;
@@ -172,13 +175,13 @@ while (true) {
       break;
     }
   } else {
-    prompt(`Dealer stays at ${total(dealerCards)}`);
+    prompt(`Dealer stays at ${dealerTotal}`);
   }
 
   //both player and dealer stays - compare cards:
   console.log('===================');
-  prompt(`Dealer has ${dealerCards}, for a total of ${total(dealerCards)}`);
-  prompt(`Player has ${playerCards}, for a total of ${total(playerCards)}`);
+  prompt(`Dealer has ${dealerCards}, for a total of ${dealerTotal}`);
+  prompt(`Player has ${playerCards}, for a total of ${playerTotal}`);
   console.log('====================');
 
   displayResults(dealerCards, playerCards);

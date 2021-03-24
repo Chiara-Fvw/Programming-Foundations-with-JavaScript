@@ -1,9 +1,9 @@
 let readline = require('readline-sync');
 
-const SUITS = ['H', 'D', 'C', 'S'];
+const SUITS = ['hearts', 'diamonds', 'clubs', 'spades'];
 const VALUES = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
 
-const MATCHES_TO_WIN = 2;
+const ROUNDS_TO_WIN = 2;
 const TOP_SCORE = 21;
 const DEALER_STAY_SCORE = 17;
 
@@ -35,6 +35,11 @@ function initializeDeck() {
   return shuffle(deck);
 }
 
+function displayCards(cards) {
+  let cardsToDisplay = cards[1] + ' of ' + cards[0];
+  return cardsToDisplay;
+}
+
 function total(cards) {
   let values = cards.map(card => card[1]);
   let sum = 0;
@@ -60,7 +65,7 @@ function busted(total) {
   return total > TOP_SCORE; //si es mayor devuelve true.
 }
 
-function detectResult(dealerTotal, playerTotal) {
+function detectRoundResult(dealerTotal, playerTotal) {
   if (playerTotal > TOP_SCORE) {
     return 'PLAYER_BUSTED';
   } else if (dealerTotal > TOP_SCORE) {
@@ -74,8 +79,8 @@ function detectResult(dealerTotal, playerTotal) {
   }
 }
 
-function displayResults(dealerTotal, playerTotal) {
-  let result = detectResult(dealerTotal, playerTotal);
+function displayRoundResults(dealerTotal, playerTotal) {
+  let result = detectRoundResult(dealerTotal, playerTotal);
 
   switch (result) {
     case 'PLAYER_BUSTED':
@@ -115,11 +120,7 @@ function playAgain() {
     answer = readline.question().toLowerCase();
   }
 
-  if (answer === 'y') {
-    return true;
-  } else {
-    return false;
-  }
+  return answer === 'y';
 }
 
 function popTwoFromDeck(deck) {
@@ -127,13 +128,20 @@ function popTwoFromDeck(deck) {
 }
 
 function hand(cards) {
-  return cards.map(card => `${card[1]}${card[0]}`).join(' ');
+  return cards.map(card => `${card[1]} of ${card[0]}`).join(', ');
+}
+
+function CardsComparation(dealerCards, playerCards, dealerTotal, playerTotal) {
+  console.log('===================');
+    prompt(`Dealer has ${hand(dealerCards)}, for a total of ${dealerTotal}`);
+    prompt(`Player has ${hand(playerCards)}, for a total of ${playerTotal}`);
+    console.log('====================');
 }
 
 function someWinsMatch(dealerWins, playerWins) {
-  if (playerWins === MATCHES_TO_WIN) {
+  if (playerWins === ROUNDS_TO_WIN) {
     return 'player';
-  } else if (dealerWins === MATCHES_TO_WIN) {
+  } else if (dealerWins === ROUNDS_TO_WIN) {
     return 'dealer';
   } else {
     return false;
@@ -166,11 +174,11 @@ while (true) {
 
   console.clear();
   prompt('Welcome to Twenty-one!\n');
-  prompt(`The first winning ${MATCHES_TO_WIN} matches will be the grand winner. Good Luck! \n`);
+  prompt(`The first winning ${ROUNDS_TO_WIN} rounds will be the match grand winner. Good Luck! \n`);
 
   while (!someWinsMatch(dealerWins, playerWins)) {  //MAIN GAME LOOP
 
-    prompt('New match starts now!');
+    prompt('New round starts now!');
     let deck = initializeDeck();
     let playerCards = [];
     let dealerCards = [];
@@ -182,8 +190,8 @@ while (true) {
     let playerTotal = total(playerCards);
     let dealerTotal = total(dealerCards);
 
-    prompt(`Dealer has ${dealerCards[0]} and ?`);
-    prompt(`You have: ${playerCards[0]} and ${playerCards[1]}, for a total of ${playerTotal}.`);
+    prompt(`Dealer has ${displayCards(dealerCards[0])} and ?`);
+    prompt(`You have: ${displayCards(playerCards[0])} and ${displayCards(playerCards[1])}, for a total of ${playerTotal}.`);
 
     //Player turn
     while (true) {
@@ -206,7 +214,7 @@ while (true) {
     }
 
     if (busted(playerTotal)) {
-      displayResults(dealerTotal, playerTotal);
+      displayRoundResults(dealerTotal, playerTotal);
       dealerWins += 1;
       displayMatchScores(dealerWins, playerWins);
       continue;
@@ -225,7 +233,7 @@ while (true) {
 
     if (busted(dealerTotal)) {
       prompt(`Dealer total is now: ${dealerTotal}`);
-      displayResults(dealerTotal, playerTotal);
+      displayRoundResults(dealerTotal, playerTotal);
       playerWins += 1;
       displayMatchScores(dealerWins, playerWins);
       continue;
@@ -234,19 +242,15 @@ while (true) {
     }
 
     //both player and dealer stays - compare cards:
-    console.log('===================');
-    prompt(`Dealer has ${dealerCards}, for a total of ${dealerTotal}`);
-    prompt(`Player has ${playerCards}, for a total of ${playerTotal}`);
-    console.log('====================');
+    CardsComparation(dealerCards, playerCards, dealerTotal, playerTotal);
 
-    if (detectResult(dealerTotal, playerTotal) === 'DEALER') {
+    if (detectRoundResult(dealerTotal, playerTotal) === 'DEALER') {
       dealerWins += 1;
-    }
-    if (detectResult(dealerTotal, playerTotal) === 'PLAYER') {
+    } else if (detectRoundResult(dealerTotal, playerTotal) === 'PLAYER') {
       playerWins += 1;
     }
 
-    displayResults(dealerTotal, playerTotal);
+    displayRoundResults(dealerTotal, playerTotal);
 
     displayMatchScores(dealerWins, playerWins);
 

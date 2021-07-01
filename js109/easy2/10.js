@@ -15,9 +15,12 @@ console.log(stringToSignedInteger("-570") === -570); // logs true
 console.log(stringToSignedInteger("+100") === 100); // logs true
 
 Algorithm:
+take the string:
 
-check if there is some sign:
- if - or + slice number transform it and after return sign and number.
+  check if there is sign in the first place
+
+    if negative return the sign and the stringToInteger
+    if + or nothing return the stringToInteger
  
 
 */
@@ -47,9 +50,9 @@ function stringToInteger(string) {
 function stringToSignedInteger(string) {
   switch (string[0]) {
     case '-':
-      return -stringToInteger(string.slice(1));
-    case '+':
-      return stringToInteger(string.slice(1));
+      return - stringToInteger(string.slice(1));
+      case '+':
+        return stringToInteger(string.slice(1));
     default:
       return stringToInteger(string);
   }

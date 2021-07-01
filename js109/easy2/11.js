@@ -28,22 +28,18 @@ Each reminder concatenate by index to emtpy string.
 const DIGITS = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
 
 function integerToString(number) {
-  let result = '';
+  let stringNumber = '';
 
   do {
-    let remainder = number % 10;
-    console.log(remainder);
+    stringNumber = DIGITS[number % 10] + stringNumber;
     number = Math.floor(number / 10);
-    console.log(number);
-    result = DIGITS[remainder] + result;
-    console.log(result);
   } while (number > 0);
 
-  return result;
+  return stringNumber;
 }
 
 
 console.log(integerToString(4321));        // "4321"
-integerToString(0);           // "0"
-integerToString(5000);        // "5000"
-integerToString(1234567890);  // "1234567890"
+console.log(integerToString(0));           // "0"
+console.log(integerToString(5000));        // "5000"
+console.log(integerToString(1234567890));  // "1234567890"

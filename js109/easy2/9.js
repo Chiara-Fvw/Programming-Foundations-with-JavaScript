@@ -17,18 +17,30 @@ Examples
 console.log(stringToInteger("4321") === 4321); // logs true
 console.log(stringToInteger("570") === 570); // logs true 
 
+
 Data structure:
-strings and numbers.
+Input: string
+
+Intermediate: object.
+
+Output: number
+
 
 algorithm
 
-define function with one paramenter string
+- define function with one paramenter (string)
+- delcare an object variable where all string representation of digits 0 - 9 are keys and values must be the numeric representation.
+- split the string to iterate through each character:
+- convert each char to its number (with map)
+- declare variable value assign it to 0
+- iterate the array again: for each digit multiply the value by 10 and then add teh current char.
+- return value.
 
-
-
+c
 */
 function stringToInteger(string) {
-  const DIGITS = {
+
+  const DIGITS =  {
     0: 0,
     1: 1,
     2: 2,
@@ -41,11 +53,12 @@ function stringToInteger(string) {
     9: 9,
   }
 
-  let arrayOfDigits = string.split('').map(digit => DIGITS[digit]);
+  let arrayOfNums = string.split('').map(char => DIGITS[char]);
+
   let value = 0;
 
-  arrayOfDigits.forEach(char => value = (value * 10) + char);
-
+  arrayOfNums.forEach(char => value = (value * 10) + char);
+ 
   return value;
 }
 
